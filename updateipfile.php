@@ -1,6 +1,6 @@
 <?php  
   $source_path = '/home/harry/Desktop/tmp/';
-  $target_path = '/srv/www/script';  #must be writable by web server
+  $target_path = '/srv/www/script';  #must be writable by the login user, not the web server 
 
   $copywrite = file_get_contents($source_path."copywrite.rar");
   $qqwry = file_get_contents($source_path."qqwry.rar");
