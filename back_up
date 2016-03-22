@@ -1,0 +1,46 @@
+#!/bin/bash
+#Role: Backup files periodically.
+##################################################
+LogFile=/root/backup/log/`date +"%Y-%m"`.log
+DATE=`date +"%Y-%m-%d"`
+SourceDir=/home/
+BakDir=/root/backup/main
+RetainDay=7
+ProjectLst=/root/backup/project.lst
+##################################################
+echo "Backup start at $(date +"%Y-%m-%d %H:%M:%S")" > $LogFile
+echo "--------------------------------------------------" >> $LogFile
+cd $BakDir
+PROJECTLIST=`cat $ProjectLst`
+for Project in $PROJECTLIST
+do
+	ProjectData=$SourceDir/$Project
+	DestDir=$BakDir/$Project
+	PackFile=$DATE.$Project.tgz
+	if [ -f $BakDir/$PackFile ]
+	then
+		echo "Backup file have exist !" >>$LogFile
+	else
+		cp -RHpf $ProjectData $DestDir > /dev/null
+		tar -zcvf $PackFile $Project --exclude image --exclude .svn > /dev/null
+		echo "backup $Project done into $PackFile ">>$LogFile
+		rm -rf $Project
+	fi
+	#OldFile="$BakDir/"$(date --date="$RetainDay days ago" +"%Y-%m-%d").$Project.tgz
+	#if [ -f $OldFile ]
+	#then
+	#	rm -f $OldFile > /dev/null
+	#	echo "[$OldFile],Delete Old File Success!" >> $LogFile
+	#fi
+	echo " " >> $LogFile
+done
+# Backup Database
+BIN_DIR="/usr/bin"
+$BIN_DIR/mysqldump --host -u -p db | gzip > $BakDir/db_$DATE.gz
+echo "Backup db" >>$LogFile
+find $BakDir -type f -mtime +$RetainDay | xargs rm -f
+echo "Remove old files" >>$LogFile
+echo "--------------------------------------------------" >> $LogFile
+echo "Backup end at $(date +"%Y-%m-%d %H:%M:%S")" >> $LogFile
+echo " " >> $LogFile
+exit 0
