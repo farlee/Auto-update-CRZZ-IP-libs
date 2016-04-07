@@ -19,6 +19,13 @@ Another rotate log for nginx:
     sharedscripts
     postrotate
         [ ! -f /usr/local/nginx/logs/nginx.pid ] || kill -USR1 `cat /usr/local/nginx/logs/nginx.pid`
-        mv /home/wwwlogs/*.log-* /home/wwwlogs/backup/
+        mv /home/wwwlogs/*.log-*.gz /home/wwwlogs/backup/
     endscript
 }
+
+#Running Test: logrotate -d -f /etc/logrotate.d/nginx
+#Excute right now: logrotate -f /etc/logrotate.d/nginx
+#Note: Compress would be excuted after the script, we have moved the log file to another place 
+# which would make the file not compressed. One solution is moved the .gz files only.
+
+
