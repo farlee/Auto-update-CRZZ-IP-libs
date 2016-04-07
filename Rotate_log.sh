@@ -28,7 +28,10 @@ Another rotate log for nginx:
 
 #Running Test: logrotate -d -f /etc/logrotate.d/nginx
 #Excute right now: logrotate -f /etc/logrotate.d/nginx
-#Note: Compress would be excuted after the script, we have moved the log file to another place 
+#Note1: Compress would be excuted after the script, we have moved the log file to another place 
 # which would make the file not compressed. One solution is moved the .gz files only.
+#Note2: if the php error logs are in the same directory, remember to add:
+[ ! -f /usr/local/php/var/run/php-fpm.pid ] || kill -USR1 `cat /usr/local/php/var/run/php-fpm.pid`
+# in the script section. 
 
 
