@@ -19,7 +19,10 @@ Another rotate log for nginx:
     sharedscripts
     postrotate
         [ ! -f /usr/local/nginx/logs/nginx.pid ] || kill -USR1 `cat /usr/local/nginx/logs/nginx.pid`
-        mv /home/wwwlogs/*.log-*.gz /home/wwwlogs/backup/
+        for f in /home/wwwlogs/*.log-*.gz; do
+            [ ! -f "$f" ] || mv /home/wwwlogs/*.log-*.gz /home/wwwlogs/backup/
+            break
+        done
     endscript
 }
 
